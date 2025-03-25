@@ -4,11 +4,7 @@ const Home = () => {
   return (
     <div>
       <p>Home</p>
-      <Link to={"/login"}>
-        <a href="" className="underline text-blue-400">
-          Go to Login Page
-        </a>
-      </Link>
+      <Link to={"/login"}>Go to Login Page</Link>
     </div>
   );
 };

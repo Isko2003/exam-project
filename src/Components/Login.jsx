@@ -11,16 +11,23 @@ const Login = () => {
     setError("");
     try {
       const response = await axios.post(
-        "http://imtahan-4zd9.onrender.com/auth/login",
-        { username, password }
+        "https://imtahan-4zd9.onrender.com/auth/login",
+        { username, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
+
       const { access, refresh } = response.data;
       localStorage.setItem("access_token", access);
       localStorage.setItem("refresh_token", refresh);
       console.log("Login Successful");
       setPassword("");
     } catch (err) {
-      console.log(err.response);
+      console.log(err.response || err.message);
+
       if (err.response) {
         setError(
           err.response.data.detail || "Giriş uğursuz oldu, yenidən cəhd edin."
