@@ -1,14 +1,19 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+
     try {
       const response = await axios.post(
         "https://imtahan-4zd9.onrender.com/auth/login",
@@ -20,10 +25,13 @@ const Login = () => {
         }
       );
 
-      const { access, refresh } = response.data;
-      localStorage.setItem("access_token", access);
+      const { access_token, refresh } = response.data;
+      localStorage.setItem("token", access_token);
       localStorage.setItem("refresh_token", refresh);
       console.log("Login Successful");
+      navigate("/exams");
+
+      setSuccess("Login Successful!");
       setPassword("");
     } catch (err) {
       console.log(err.response || err.message);
@@ -45,7 +53,13 @@ const Login = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 shadow-lg rounded-lg w-96">
         <h2 className="text-2xl font-bold text-center mb-6">İmtahan Portalı</h2>
+
+        {success && (
+          <p className="text-green-500 text-sm text-center">{success}</p>
+        )}
+
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-gray-700">Username</label>
