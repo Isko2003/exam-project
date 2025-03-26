@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../CSS/Exams.css";
 import PrivateRoute from "../PrivateRoute";
 import { useNavigate } from "react-router-dom";
 const Exams = () => {
+  const [user, setUser] = useState(null);
+  const [exams, setExams] = useState([]);
   const navigate = useNavigate();
   async function fetchUserInfo() {
     const token = localStorage.getItem("token");
@@ -12,7 +14,7 @@ const Exams = () => {
     }
     try {
       const response = await fetch(
-        `https://imtahan-4zd9.onrender.com/auth/me?token=${token}`,
+        `http://192.168.0.133:8000/auth/me?token=${token}`,
         {
           method: "GET",
           headers: {
@@ -22,6 +24,7 @@ const Exams = () => {
       );
       console.log(token);
       const userData = await response.json();
+      setUser(userData.first_name);
 
       if (response.ok) {
         console.log(userData);
@@ -37,7 +40,7 @@ const Exams = () => {
   async function fetchExams() {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("https://imtahan-4zd9.onrender.com/exams/", {
+      const response = await fetch("http://192.168.0.133:8000/exams/", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -45,13 +48,8 @@ const Exams = () => {
       });
 
       if (response.ok) {
-        const exams = await response.json();
-        const examsList = document.getElementById("examsList");
-        examsList.innerHTML =
-          "<h2>Your Exams:</h2>" +
-          exams
-            .map((exam) => `<p>${exam.name} - Time: ${exam.time}</p>`)
-            .join("");
+        const examsArr = await response.json();
+        setExams(examsArr);
       } else {
         throw new Error("Failed to fetch exams");
       }
@@ -64,13 +62,41 @@ const Exams = () => {
     fetchUserInfo();
     fetchExams();
   }, []);
+
+  const handleEnterExam = (id) => {
+    navigate(`/exam/${id}/questions`);
+  };
+
   return (
-    <div>
-      <h1>Exams Page</h1>
-      <p>
-        Welcome, <span id="userName">Loading...</span>!
-      </p>
-      <div id="examsList"></div>
+    <div className="exams-container">
+      <div className="header">
+        <h1>Exams</h1>
+        <div>
+          {user && <span className="user-info">Logged in as: {user}</span>}
+          {/* <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button> */}
+        </div>
+      </div>
+      {exams.length === 0 ? (
+        <p>No exams available.</p>
+      ) : (
+        <ul className="exams-list">
+          {exams.map((exam) => (
+            <li key={exam.id} className="exam-item">
+              <span>
+                {exam.name} - {exam.time}
+              </span>
+              <button
+                className="enter-exam-btn"
+                onClick={() => handleEnterExam(exam.id)}
+              >
+                Enter Exam
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

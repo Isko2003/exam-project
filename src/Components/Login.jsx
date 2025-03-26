@@ -16,7 +16,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://imtahan-4zd9.onrender.com/auth/login",
+        "http://192.168.0.133:8000/auth/login",
         { username, password },
         {
           headers: {

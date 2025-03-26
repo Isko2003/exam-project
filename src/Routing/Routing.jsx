@@ -4,6 +4,7 @@ import Home from "../Components/Home";
 import Login from "../Components/Login";
 import Exams from "../Components/Exams";
 import PrivateRoute from "../PrivateRoute";
+import Questions from "../Components/Questions";
 
 const Routing = () => {
   return (
@@ -13,6 +14,7 @@ const Routing = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/exams" element={<Exams />} />
         <Route path="/privateRoute" element={<PrivateRoute />} />
+        <Route path="/exam/:examId/questions" element={<Questions />} />
       </Routes>
     </Router>
   );
